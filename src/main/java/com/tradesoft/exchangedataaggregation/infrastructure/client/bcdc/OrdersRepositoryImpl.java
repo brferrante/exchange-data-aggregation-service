@@ -1,6 +1,5 @@
 package com.tradesoft.exchangedataaggregation.infrastructure.client.bcdc;
 
-import com.mongodb.Block;
 import com.tradesoft.exchangedataaggregation.domain.model.OrderBook;
 import com.tradesoft.exchangedataaggregation.domain.repository.OrdersRepository;
 import com.tradesoft.exchangedataaggregation.infrastructure.client.bcdc.converter.OrderBookConverter;
