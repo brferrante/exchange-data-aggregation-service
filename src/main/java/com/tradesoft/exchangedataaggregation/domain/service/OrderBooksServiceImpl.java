@@ -1,5 +1,6 @@
 package com.tradesoft.exchangedataaggregation.domain.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.tradesoft.exchangedataaggregation.domain.model.AggregatedBook;
 import com.tradesoft.exchangedataaggregation.domain.model.AggregatedOperation;
 import com.tradesoft.exchangedataaggregation.domain.model.Operation;
@@ -20,7 +21,7 @@ public class OrderBooksServiceImpl implements OrderBooksService {
 
     private final OrdersRepository ordersRepository;
     @Override
-    public List<AggregatedBook> getOrderBook() {
+    public List<AggregatedBook> getOrderBook() throws JsonProcessingException {
         // fetch the first N symbol list from exchange (N = 10, configurable)
         return ordersRepository.getSymbols().stream()
                 // fetch orders by symbol list, add to aggregated order books intermediate list

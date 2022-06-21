@@ -29,8 +29,12 @@ public class OrderBookController {
     @Operation(summary = "Provides the quantity and price average of the order book (asks and bids) for each symbol")
     @GetMapping("exchanges/{exchange-name}/order-books")
     public ResponseEntity<OrderBooksResponseDto> listAll(@PathVariable("exchange-name") String exchangeName) {
-        return ResponseEntity.ok(ConvertAggregatedBook.fromBooks(orderBooksService.getOrderBook()));
-    }
+        try {
+            return ResponseEntity.ok(ConvertAggregatedBook.fromBooks(orderBooksService.getOrderBook()));
+        } catch (Exception e){
+            return null;
+        }
+        }
     //TODO: Add logic for exchange-name to work with different exchange names.
 
 }

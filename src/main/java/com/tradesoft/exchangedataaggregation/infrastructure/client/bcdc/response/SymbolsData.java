@@ -4,12 +4,12 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.Data;
-import lombok.Value;
+import lombok.NoArgsConstructor;
 
-@Value
 @Data
 @JsonDeserialize
 @JsonIgnoreProperties
+@NoArgsConstructor
 public class SymbolsData {
     @JsonProperty("base_currency")
     private String baseCurrency;
