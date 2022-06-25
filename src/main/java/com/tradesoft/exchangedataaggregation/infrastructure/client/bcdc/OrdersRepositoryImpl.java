@@ -15,7 +15,7 @@ public class OrdersRepositoryImpl implements OrdersRepository {
     private final BlockchainClient blockchainClient;
     @Override
     public Set<String> getSymbols() throws JsonProcessingException {
-        return blockchainClient.getSymbols().getResponse().keySet();
+        return blockchainClient.getSymbols().keySet();
     }
 
     @Override
