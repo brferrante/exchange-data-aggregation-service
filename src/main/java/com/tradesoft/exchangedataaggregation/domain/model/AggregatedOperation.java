@@ -6,5 +6,5 @@ import lombok.Value;
 @Builder
 public class AggregatedOperation {
     Double priceAverage;
-    Double quantityAverage;
+    Double totalQuantity;
 }
