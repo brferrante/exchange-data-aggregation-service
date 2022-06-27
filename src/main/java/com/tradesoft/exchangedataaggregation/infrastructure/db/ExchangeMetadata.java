@@ -6,6 +6,7 @@ import lombok.Value;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.List;
 import java.util.Map;
 
 @Document(collection="metadata")
@@ -15,5 +16,5 @@ import java.util.Map;
 public class ExchangeMetadata {
     @Id
     String exchangeName;
-    Map<String,Object> exchangeMetadata;
+    List<Map<String,Object>> exchangeMetadata;
 }

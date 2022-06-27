@@ -15,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -50,12 +51,14 @@ public class MetadataController {
                 .withHeader(exchangeName)
                 .withFirstRecordAsHeader()
                 .parse(reader);
-        Map<String,Object> mappedRecord = new HashMap<>();
+        List<Map<String,Object>>mappedRecord = new ArrayList<>();
         for(CSVRecord record : records){
-            mappedRecord.putAll(record.toMap());
-            metadataRepository.save(
-                    ExchangeMetadata.builder().exchangeMetadata(mappedRecord)
-                            .exchangeName(exchangeName).build());
+            Map<String,Object> recordMap= new HashMap<>();
+            recordMap.putAll(record.toMap());
+            mappedRecord.add(recordMap);
         }
+        metadataRepository.save(
+                ExchangeMetadata.builder().exchangeMetadata(mappedRecord)
+                        .exchangeName(exchangeName).build());
     }
 }
