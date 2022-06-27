@@ -2,18 +2,20 @@ package com.tradesoft.exchangedataaggregation.application.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.tradesoft.exchangedataaggregation.application.converter.ConvertAggregatedBook;
-import com.tradesoft.exchangedataaggregation.application.dto.AggregatedSymbolOperationsDto;
 import com.tradesoft.exchangedataaggregation.application.dto.OrderBooksResponseDto;
 import com.tradesoft.exchangedataaggregation.domain.model.AvailableExchanges;
 import com.tradesoft.exchangedataaggregation.domain.model.OperationType;
 import com.tradesoft.exchangedataaggregation.domain.service.OrderBooksService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.webjars.NotFoundException;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.InvalidPropertiesFormatException;
 import java.util.List;
 import java.util.Optional;
 
@@ -62,6 +64,19 @@ public class OrderBookController {
     @GetMapping("exchanges/{exchange-name}/symbols-list")
     public ResponseEntity<List<String>> getAllSymbols(@PathVariable("exchange-name") AvailableExchanges exchangeName) throws JsonProcessingException, NotFoundException {
             return ResponseEntity.ok(orderBooksService.getAllSymbols(exchangeName));
+    }
+
+    @ControllerAdvice
+    public class Handler {
+
+        @ExceptionHandler(Exception.class)
+        public ResponseEntity<Object> handle(Exception ex,
+                                             HttpServletRequest request, HttpServletResponse response) {
+            if (ex instanceof NotFoundException || ex instanceof InvalidPropertiesFormatException) {
+                return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+            }
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 
 }

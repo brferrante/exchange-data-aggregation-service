@@ -9,12 +9,16 @@ import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
 import org.apache.tika.Tika;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.webjars.NotFoundException;
 
 import javax.annotation.security.PermitAll;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -35,9 +39,9 @@ public class MetadataController {
     @CrossOrigin
     @Operation(summary = "Gets metadata by exchange name")
     @GetMapping("exchanges/{exchange-name}/metadata")
-    public ExchangeMetadata getMetadata(@PathVariable("exchange-name") String exchangeName){
-        return metadataRepository.findById(exchangeName)
-                .orElseThrow(()-> new NotFoundException("Requested exchange records not found"));
+    public ResponseEntity<ExchangeMetadata> getMetadata(@PathVariable("exchange-name") String exchangeName){
+        return ResponseEntity.ok(metadataRepository.findById(exchangeName)
+                .orElseThrow(()-> new NotFoundException("Requested exchange records not found")));
     }
 
     /**
@@ -74,5 +78,18 @@ public class MetadataController {
                         .exchangeName(exchangeName).build());
         reader.close();
 
+    }
+
+    @ControllerAdvice
+    public class Handler {
+
+        @ExceptionHandler(Exception.class)
+        public ResponseEntity<Object> handle(Exception ex,
+                                             HttpServletRequest request, HttpServletResponse response) {
+            if (ex instanceof NotFoundException || ex instanceof InvalidPropertiesFormatException) {
+                return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+            }
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 }
