@@ -26,14 +26,12 @@ public class MetadataController {
     @Autowired
     private MetadataRepository metadataRepository;
 
-    // 2 operations to be defined, get and post metadata, to mongoDB collection
-    // Get is by exchange name as key.
-    // Post is an upsert by exchange name as key.
-//    @Operation(summary = "Gets metadata by exchange name")
-//    @GetMapping("exchanges/{exchange-name}/metadata")
-//    public List<ExchangeMetadata> getAll(@PathVariable("exchange-name") String exchangeName){
-//        return metadataRepository.findAll();
-//    }
+    /**
+     * Allows the read of metadata records in DB through exchange name
+     * <p>
+     *
+     * @param exchangeName specifies the desired exchange which metadata to consult.
+     */
 
     @Operation(summary = "Gets metadata by exchange name")
     @GetMapping("exchanges/{exchange-name}/metadata")
@@ -41,6 +39,13 @@ public class MetadataController {
         return metadataRepository.findById(exchangeName).orElse(ExchangeMetadata.builder().build());
     }
 
+    /**
+     * Allows the loading of metadata records in DB through exchange name and a .csv file
+     * <p>
+     *
+     * @param exchangeName specifies the desired exchange which metadata to upload.
+     * @param multipartFile indicates the uploaded .csv file
+     */
     @Operation(summary = "Uploads metadata by exchange name through a .csv file")
     @PostMapping(value = "exchanges/{exchange-name}/metadata", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public void saveMetadata(@PathVariable("exchange-name") String exchangeName,

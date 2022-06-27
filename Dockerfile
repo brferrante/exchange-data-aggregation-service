@@ -1,10 +1,6 @@
-FROM maven:3.8.6-eclipse-temurin-11-alpine AS build
-WORKDIR /home/app
+FROM maven:3.8.3-openjdk-17
+WORKDIR /app
 COPY . .
 RUN mvn clean package
-
-FROM openjdk:17-jdk-slim
-WORKDIR /app
-COPY --from=build /home/app/target/*.jar application.jar
 EXPOSE 8090
 CMD java -jar application.jar
