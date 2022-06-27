@@ -6,7 +6,6 @@ import com.tradesoft.exchangedataaggregation.domain.repository.OrdersRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.webjars.NotFoundException;
-
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.util.*;
@@ -22,17 +21,6 @@ public class OrderBooksServiceImpl implements OrderBooksService {
     public List<AggregatedBook> getOrderBook(
             AvailableExchanges exchangeName, Long page, Long size, Boolean isSorted, Optional<String> symbol, OperationType operationType) throws JsonProcessingException {
             return getAggregatedBooks(exchangeName, page, size, isSorted, symbol, operationType);
-
-
-
-
-//        return this.getAllSymbols().stream()
-//                // fetch orders by symbol list, add to aggregated order books intermediate list
-//                .map(ordersRepository::getOrderBookBySymbol)
-//                // generate averages and add orderBook to return map List<OrderBook>
-//                .map(this::aggregateOrderBook)
-//                .collect(Collectors.toList());
-
     }
 
     private ArrayList<AggregatedBook> getAggregatedBooks( AvailableExchanges exchangeName,
@@ -67,12 +55,6 @@ public class OrderBooksServiceImpl implements OrderBooksService {
 
     }
 
-    private AggregatedOperationSearch aggregateOperationSearch(List<Operation> operations, String symbol){
-        return AggregatedOperationSearch.builder()
-                .symbol(symbol)
-                .operation(operations)
-                .build();
-    }
     private AggregatedBook aggregateOrderBook(OrderBook orderBook, OperationType operationType) {
         // Run averages and return aggregated orderBook
         // Add only requested operation type
