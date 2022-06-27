@@ -1,5 +1,6 @@
 package com.tradesoft.exchangedataaggregation.application.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.tradesoft.exchangedataaggregation.application.converter.ConvertAggregatedBook;
 import com.tradesoft.exchangedataaggregation.application.dto.AggregatedSymbolOperationsDto;
 import com.tradesoft.exchangedataaggregation.application.dto.OrderBooksResponseDto;
@@ -43,8 +44,8 @@ public class OrderBookController {
                                                          @RequestParam(value = "size", required = false, defaultValue = "20") Long size,
                                                          @RequestParam(value="order-alphabetically", defaultValue = "false") Boolean order,
                                                          @RequestParam(value="symbol", required = false) Optional<String> symbol,
-                                                         @RequestParam(value = "operation-type", defaultValue = "ALL") OperationType operationType) {
-        try {
+                                                         @RequestParam(value = "operation-type", defaultValue = "ALL") OperationType operationType) throws JsonProcessingException {
+
             var actualPage = Optional.ofNullable(page)
                     .orElse(defaultPage);
             var actualSize = Optional.ofNullable(size)
@@ -52,19 +53,13 @@ public class OrderBookController {
 
             return ResponseEntity.ok(ConvertAggregatedBook.fromBooks(orderBooksService.getOrderBook(exchangeName, actualPage, actualSize, order, symbol, operationType)));
 
-        } catch (Exception e){
-            return null;
-        }
+
     }
     @CrossOrigin
     @Operation(summary = "Provides the alphabetical list for all available symbols")
     @GetMapping("exchanges/{exchange-name}/symbols-list")
-    public ResponseEntity<List<String>> getAllSymbols(@PathVariable("exchange-name") String exchangeName) {
-        try {
+    public ResponseEntity<List<String>> getAllSymbols(@PathVariable("exchange-name") String exchangeName) throws JsonProcessingException {
             return ResponseEntity.ok(orderBooksService.getAllSymbols());
-        } catch (Exception e){
-            return null;
-        }
     }
 
 }

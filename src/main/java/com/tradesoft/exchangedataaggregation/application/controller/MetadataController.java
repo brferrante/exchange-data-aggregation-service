@@ -11,14 +11,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.webjars.NotFoundException;
 
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -36,7 +34,8 @@ public class MetadataController {
     @Operation(summary = "Gets metadata by exchange name")
     @GetMapping("exchanges/{exchange-name}/metadata")
     public ExchangeMetadata getMetadata(@PathVariable("exchange-name") String exchangeName){
-        return metadataRepository.findById(exchangeName).orElse(ExchangeMetadata.builder().build());
+        return metadataRepository.findById(exchangeName)
+                .orElseThrow(()-> new NotFoundException("Requested exchange records not found"));
     }
 
     /**
