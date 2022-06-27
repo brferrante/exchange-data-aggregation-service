@@ -24,19 +24,20 @@ public class OrderBookController {
     private final Long defaultPage =1L;
     private final Long defaultSize =20L;
     //TODO add Page and Size parameters with springconfig
-    /*
-    -    exchanges/{exchange-name}/order-books DONE
--    exchanges/{exchange-name}/order-books/{symbol}/ask
--    exchanges/{exchange-name}/order-books/{symbol}/bid
-
--    exchanges/{exchange-name}/order-books?orderBy=asc
--    exchanges/{exchange-name}/order-books/{symbol}/ask?orderBy=asc
--    exchanges/{exchange-name}/order-books/{symbol}/bid?orderBy=asc
-@PathVariable(exchange-name) String exName, @RequestParam(orderBy) String orderBy
-@RequestParam(required = false)
+    /**
+     * Fetches the averages for all available specified exchange symbols OR the specified symbol.
+     * <p>
+     * Pagination and results per page can be specified via their respective fields
+     * Alphabetical listing available by enabling the order-alphabetically flag.
+     * Can narrow requested operation by operation type if desired, default ALL will fetch bids and asks.
+     *
+     * @param exchangeName specifies the desired exchange (to be implemented at a later time, for now it defaults to Blockchain.com
+     * @param page specifies pagination for result set
+     * @param size specifies amounts of replies per page
+     * @param symbol specifies if the operation is for a particular currency
+     * @param operationType specifies if a particular operation type is requested
+     * @param order specifies if the list is sorted alphabetically
      */
-
-
     @Operation(summary = "Provides the quantity and price average of the order book (asks and bids) for each symbol")
     @GetMapping("exchanges/{exchange-name}/order-books")
     public ResponseEntity<OrderBooksResponseDto> listAll(@PathVariable("exchange-name") String exchangeName,
@@ -53,24 +54,6 @@ public class OrderBookController {
 
             return ResponseEntity.ok(ConvertAggregatedBook.fromBooks(orderBooksService.getOrderBook(exchangeName, actualPage, actualSize, order, symbol, operationType)));
 
-        } catch (Exception e){
-            return null;
-        }
-    }
-
-    @Operation(summary = "Provides the quantity and operation info of the order book (asks or bids) one symbol",
-            parameters = {
-                    @Parameter(name = "exchange-name", example = "blockchain.com"),
-                    @Parameter(name = "symbol", example = "BTC-USD"),
-                    @Parameter(name = "operation-type", example = "ask / bid")
-            })
-    @GetMapping("exchanges/{exchange-name}/order-books-by-symbol")
-    public ResponseEntity<AggregatedSymbolOperationsDto> listOperationBySymbol(
-            @PathVariable("exchange-name") String exchangeName,
-            @RequestParam("symbol") String symbol,
-            @RequestParam("operation-type") OperationType operation) {
-        try {
-            return ResponseEntity.ok(ConvertAggregatedBook.fromSymbolOperation(orderBooksService.getOrderBookOperationBySymbol(symbol, operation)));
         } catch (Exception e){
             return null;
         }

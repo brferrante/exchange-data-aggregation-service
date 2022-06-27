@@ -1,0 +1,28 @@
+version: '3'
+services:
+  app:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    container_name: app_exchange_books
+    ports:
+      - "8090:8090"
+    depends_on:
+      - mongo
+    networks:
+      - exchange-network
+  mongo:
+    image: mongo
+    volumes:
+      - data-volume:/data/db
+    ports:
+      - "27017:27017"
+    networks:
+      - exchange-network
+networks:
+  exchange-network:
+    driver: bridge
+volumes:
+  data-volume:
+  web-root:
+    driver: local

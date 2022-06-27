@@ -70,12 +70,6 @@ public class OrderBooksServiceImpl implements OrderBooksService {
 
     }
 
-    @Override
-    public AggregatedOperationSearch getOrderBookOperationBySymbol(String symbol, OperationType operation) {
-        return aggregateOperationSearch(
-                getDesiredOperation(ordersRepository.getOrderBookBySymbol(symbol),operation), symbol);
-    }
-
     private AggregatedOperationSearch aggregateOperationSearch(List<Operation> operations, String symbol){
         return AggregatedOperationSearch.builder()
                 .symbol(symbol)

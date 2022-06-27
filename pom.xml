@@ -14,20 +14,32 @@
 	<name>exchange-data-aggregation</name>
 	<description>exchange-data-aggregation-app</description>
 	<properties>
-		<java.version>11</java.version>
+		<java.version>17</java.version>
+		<maven.compiler.source>17</maven.compiler.source>
+		<maven.compiler.target>17</maven.compiler.target>
 	</properties>
 	<dependencies>
-<!--		<dependency>
+		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-mongodb</artifactId>
+		</dependency>
+<!--		<dependency>
+			<groupId>org.springframework.data</groupId>
+			<artifactId>spring-data-mongodb</artifactId>
+			<version>3.1.3</version>
 		</dependency>-->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-rest</artifactId>
 		</dependency>
-		<dependency>
+<!--		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency> -->
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-csv</artifactId>
+			<version>1.4</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
