@@ -13,4 +13,5 @@ spring:
     user:
       name: user
       password: bcdcTestApp
+      roles: USER, ADMIN
 server.port: 8090

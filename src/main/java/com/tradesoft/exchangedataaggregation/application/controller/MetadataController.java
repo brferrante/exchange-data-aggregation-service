@@ -7,12 +7,14 @@ import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
+import org.apache.tika.Tika;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.webjars.NotFoundException;
 
+import javax.annotation.security.PermitAll;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -51,6 +53,11 @@ public class MetadataController {
     public void saveMetadata(@PathVariable("exchange-name") String exchangeName,
                                          @RequestPart("file") MultipartFile multipartFile) throws IOException {
 
+        Tika tika = new Tika();
+        if(!tika.detect(multipartFile.getBytes()).equalsIgnoreCase("TEXT/PLAIN")){
+            throw new InvalidPropertiesFormatException("Not a .csv file!");
+        }
+
         InputStreamReader reader = new InputStreamReader(multipartFile.getInputStream());
         Iterable<CSVRecord> records = CSVFormat.DEFAULT
                 .withHeader(exchangeName)
@@ -65,5 +72,7 @@ public class MetadataController {
         metadataRepository.save(
                 ExchangeMetadata.builder().exchangeMetadata(mappedRecord)
                         .exchangeName(exchangeName).build());
+        reader.close();
+
     }
 }

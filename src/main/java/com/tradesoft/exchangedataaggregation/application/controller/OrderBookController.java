@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.tradesoft.exchangedataaggregation.application.converter.ConvertAggregatedBook;
 import com.tradesoft.exchangedataaggregation.application.dto.AggregatedSymbolOperationsDto;
 import com.tradesoft.exchangedataaggregation.application.dto.OrderBooksResponseDto;
+import com.tradesoft.exchangedataaggregation.domain.model.AvailableExchanges;
 import com.tradesoft.exchangedataaggregation.domain.model.OperationType;
 import com.tradesoft.exchangedataaggregation.domain.service.OrderBooksService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -11,6 +12,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.webjars.NotFoundException;
 
 import java.util.List;
 import java.util.Optional;
@@ -39,12 +41,12 @@ public class OrderBookController {
     @CrossOrigin
     @Operation(summary = "Provides the quantity and price average of the order book (asks and bids) for each symbol")
     @GetMapping("exchanges/{exchange-name}/order-books")
-    public ResponseEntity<OrderBooksResponseDto> listAll(@PathVariable("exchange-name") String exchangeName,
+    public ResponseEntity<OrderBooksResponseDto> listAll(@PathVariable("exchange-name") AvailableExchanges exchangeName,
                                                          @RequestParam(value = "page", required = false, defaultValue = "1") Long page,
                                                          @RequestParam(value = "size", required = false, defaultValue = "20") Long size,
                                                          @RequestParam(value="order-alphabetically", defaultValue = "false") Boolean order,
                                                          @RequestParam(value="symbol", required = false) Optional<String> symbol,
-                                                         @RequestParam(value = "operation-type", defaultValue = "ALL") OperationType operationType) throws JsonProcessingException {
+                                                         @RequestParam(value = "operation-type", defaultValue = "ALL") OperationType operationType) throws JsonProcessingException, NotFoundException {
 
             var actualPage = Optional.ofNullable(page)
                     .orElse(defaultPage);
@@ -58,8 +60,8 @@ public class OrderBookController {
     @CrossOrigin
     @Operation(summary = "Provides the alphabetical list for all available symbols")
     @GetMapping("exchanges/{exchange-name}/symbols-list")
-    public ResponseEntity<List<String>> getAllSymbols(@PathVariable("exchange-name") String exchangeName) throws JsonProcessingException {
-            return ResponseEntity.ok(orderBooksService.getAllSymbols());
+    public ResponseEntity<List<String>> getAllSymbols(@PathVariable("exchange-name") AvailableExchanges exchangeName) throws JsonProcessingException, NotFoundException {
+            return ResponseEntity.ok(orderBooksService.getAllSymbols(exchangeName));
     }
 
 }

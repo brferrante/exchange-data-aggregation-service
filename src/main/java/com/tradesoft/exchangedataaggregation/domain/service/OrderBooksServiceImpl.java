@@ -5,6 +5,7 @@ import com.tradesoft.exchangedataaggregation.domain.model.*;
 import com.tradesoft.exchangedataaggregation.domain.repository.OrdersRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.webjars.NotFoundException;
 
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
@@ -14,16 +15,15 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class OrderBooksServiceImpl implements OrderBooksService {
-    // TODO: Refactor ordersRepository to a Map<String, OrderRepository>.
-    //  Key will be exchange name, will need to add a previous step to get the exchange name,
+
 
     //TODO: Add Javadoc here
     private final OrdersRepository ordersRepository;
     @Override
     public List<AggregatedBook> getOrderBook(
-            String exchangeName, Long page, Long size, Boolean isSorted, Optional<String> symbol, OperationType operationType) throws JsonProcessingException {
+            AvailableExchanges exchangeName, Long page, Long size, Boolean isSorted, Optional<String> symbol, OperationType operationType) throws JsonProcessingException {
         //TODO: When additional exchanges are implemented, add logic for exchange-name to work with different exchange names.
-            return getAggregatedBooks(page, size, isSorted, symbol, operationType);
+            return getAggregatedBooks(exchangeName, page, size, isSorted, symbol, operationType);
 
 
 
@@ -37,16 +37,16 @@ public class OrderBooksServiceImpl implements OrderBooksService {
 
     }
 
-    private ArrayList<AggregatedBook> getAggregatedBooks(
-            Long page, Long size, Boolean isSorted, Optional<String> symbol, OperationType operationType) throws JsonProcessingException {
+    private ArrayList<AggregatedBook> getAggregatedBooks( AvailableExchanges exchangeName,
+            Long page, Long size, Boolean isSorted, Optional<String> symbol, OperationType operationType) throws JsonProcessingException, NotFoundException {
         int from = (int) ((page -1)* size);
         int to = (int) (page * size);
         var symbols = new ArrayList<String>();
         if(symbol.isEmpty()) {
-            symbols.addAll(this.getAllSymbols());
+            symbols.addAll(this.getAllSymbols(exchangeName));
         } else {
             ArrayList<AggregatedBook> returnList = new ArrayList<>();
-            returnList.add(this.aggregateOrderBook(ordersRepository.getOrderBookBySymbol(symbol.get().toUpperCase(Locale.ROOT)),operationType));
+            returnList.add(this.aggregateOrderBook(ordersRepository.getOrderBookBySymbol(exchangeName, symbol.get().toUpperCase(Locale.ROOT)),operationType));
             return returnList;
         }
         if(isSorted){
@@ -56,7 +56,7 @@ public class OrderBooksServiceImpl implements OrderBooksService {
         var returnList = new ArrayList<AggregatedBook>();
         for (int i = from; i < to; i++) {
             //fetch orders by paginated symbol list, add to aggregated order books intermediate list
-            returnList.add(this.aggregateOrderBook(ordersRepository.getOrderBookBySymbol(symbols.get(i)), operationType));
+            returnList.add(this.aggregateOrderBook(ordersRepository.getOrderBookBySymbol(exchangeName, symbols.get(i)), operationType));
         }
         return returnList;
     }
@@ -64,9 +64,9 @@ public class OrderBooksServiceImpl implements OrderBooksService {
     @Override
     //TODO: When additional exchanges are implemented, Add logic for exchange-name to work with different exchange names,
     // Cache this method to an exchange-symbol map, parameter exchange name will domain this
-    public List<String> getAllSymbols() throws JsonProcessingException {
+    public List<String> getAllSymbols(AvailableExchanges exchange) throws JsonProcessingException, NotFoundException {
         //fetch all symbols from exchange
-        return new ArrayList<>(ordersRepository.getSymbols());
+        return new ArrayList<>(ordersRepository.getSymbols(exchange));
 
     }
 
