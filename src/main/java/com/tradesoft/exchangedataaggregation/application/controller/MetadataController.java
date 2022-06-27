@@ -32,7 +32,7 @@ public class MetadataController {
      *
      * @param exchangeName specifies the desired exchange which metadata to consult.
      */
-
+    @CrossOrigin
     @Operation(summary = "Gets metadata by exchange name")
     @GetMapping("exchanges/{exchange-name}/metadata")
     public ExchangeMetadata getMetadata(@PathVariable("exchange-name") String exchangeName){
@@ -46,6 +46,7 @@ public class MetadataController {
      * @param exchangeName specifies the desired exchange which metadata to upload.
      * @param multipartFile indicates the uploaded .csv file
      */
+    @CrossOrigin
     @Operation(summary = "Uploads metadata by exchange name through a .csv file")
     @PostMapping(value = "exchanges/{exchange-name}/metadata", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public void saveMetadata(@PathVariable("exchange-name") String exchangeName,

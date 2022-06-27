@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: application
+  main.allow-bean-definition-overriding: true
+  servlet.multipart:
+    enabled: true
+    max-file-size: 10MB
+    max-request-size: 10MB
+  data.mongodb:
+    authentication-database: admin
+    host: localhost
+    database: exchange_db
+    port: 27017
+server.port: 8080
