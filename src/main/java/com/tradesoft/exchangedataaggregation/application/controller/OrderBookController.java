@@ -25,7 +25,6 @@ public class OrderBookController {
     private final OrderBooksService orderBooksService;
     private final Long defaultPage =1L;
     private final Long defaultSize =20L;
-    //TODO add Page and Size parameters with springconfig
     /**
      * Fetches the averages for all available specified exchange symbols OR the specified symbol.
      * <p>

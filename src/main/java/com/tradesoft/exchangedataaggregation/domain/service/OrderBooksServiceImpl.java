@@ -17,12 +17,10 @@ import java.util.stream.Collectors;
 public class OrderBooksServiceImpl implements OrderBooksService {
 
 
-    //TODO: Add Javadoc here
     private final OrdersRepository ordersRepository;
     @Override
     public List<AggregatedBook> getOrderBook(
             AvailableExchanges exchangeName, Long page, Long size, Boolean isSorted, Optional<String> symbol, OperationType operationType) throws JsonProcessingException {
-        //TODO: When additional exchanges are implemented, add logic for exchange-name to work with different exchange names.
             return getAggregatedBooks(exchangeName, page, size, isSorted, symbol, operationType);
 
 
@@ -62,8 +60,7 @@ public class OrderBooksServiceImpl implements OrderBooksService {
     }
 
     @Override
-    //TODO: When additional exchanges are implemented, Add logic for exchange-name to work with different exchange names,
-    // Cache this method to an exchange-symbol map, parameter exchange name will domain this
+    // Exchange enum will tell the repository which exchange it should hit up.
     public List<String> getAllSymbols(AvailableExchanges exchange) throws JsonProcessingException, NotFoundException {
         //fetch all symbols from exchange
         return new ArrayList<>(ordersRepository.getSymbols(exchange));
@@ -118,17 +115,5 @@ public class OrderBooksServiceImpl implements OrderBooksService {
                         .reduce(0.0, Double::sum
                         ))
                 .build();
-    }
-
-    //TODO fix this method default return type, should only operate by operationType since it's required
-    private List<Operation> getDesiredOperation(OrderBook orderBookBySymbol, OperationType operation){
-        switch (operation){
-            case ASK:
-                return orderBookBySymbol.getAsks();
-            case BID:
-                return orderBookBySymbol.getBids();
-            default:
-                return new ArrayList<>();
-        }
     }
 }
