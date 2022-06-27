@@ -11,4 +11,8 @@ spring:
     host: localhost
     database: exchange_db
     port: 27017
+  security:
+    user:
+      name: user
+      password: bcdcTestApp
 server.port: 8080
